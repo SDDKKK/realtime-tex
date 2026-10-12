@@ -17,6 +17,9 @@
   was live (#2). The capture now leaves everything the output routine builds out of units.
 - A paragraph with a `\marginpar` is live in probe mode, with the note in the margin following
   after the next pass, like footnote text. The live engine reports the note as an insert.
+- A file `\input` in the preamble (a macro file, say) is loaded once by the live engine. It
+  was also read again as document setup, so every engine start logged "Command ... already
+  defined" for each of its macros.
 
 ## 0.0.3 (2026-10-11)
 
