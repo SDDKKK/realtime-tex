@@ -4,23 +4,10 @@
 
 ### Fixed
 
-- Diagnostics keep the whole text of LaTeX, class and package messages, including the
-  `(LaTeX)`/`(<package>)` continuation lines. Before, only the first line came through, so
-  an error such as "Mismatched LaTeX support files detected" lost the lines that say which
-  versions do not match (#1).
-- Comment lines inside or right above a paragraph no longer send its edits to the background
-  pass. rtex read two `%` lines in a row as a blank line (a paragraph break); like TeX, it now
-  drops the end of a commented line too (#3).
 - A figure or table with a comment line or `\vspace` right above it, or a comment after its
   `\end`, compiles in the live engine. The engine looked for `\begin{figure}` only at the very
   start of the unit and for `\end{figure}` only at its very end, so it typeset the `\begin` as
   text and failed with "Not in outer par mode".
-- **Two-column documents** (IEEEtran, `twocolumn`) are live again. When a column break fell
-  inside a paragraph, the page's two-column box was recorded as a row of that paragraph, and
-  the lines inside it lost their placements: in a 12-page IEEEtran paper almost no body text
-  was live (#2). The capture now leaves everything the output routine builds out of units.
-- A paragraph with a `\marginpar` is live in probe mode, with the note in the margin following
-  after the next pass, like footnote text. The live engine reports the note as an insert.
 - A figure, table, list or other block environment that is the last thing in an `\input` file
   is live. Unless the file ended with a blank line, its edits went to the background pass: the
   trailing space rtex keeps for a paragraph at the end of an `\input` file was added after the
@@ -53,6 +40,30 @@
 
 - The corpus has an IEEEtran journal paper (two columns, a nomenclature, run-in headings,
   floats). CI checks that at least 18 of its units are live and that all of them are exact.
+
+## 0.0.4 (2026-10-12)
+
+### Fixed
+
+- **Two-column documents** (IEEEtran, `twocolumn`) are live again. When a column break fell
+  inside a paragraph, the page's two-column box was recorded as a row of that paragraph, and
+  the lines inside it lost their placements: in a 12-page IEEEtran paper almost no body text
+  was live (#2). The capture now leaves everything the output routine builds out of units.
+- Comment lines inside or right above a paragraph no longer send its edits to the background
+  pass. rtex read two `%` lines in a row as a blank line (a paragraph break); like TeX, it now
+  drops the end of a commented line too (#3).
+- A paragraph with a `\marginpar` is live in probe mode, with the note in the margin following
+  after the next pass, like footnote text. The live engine reports the note as an insert.
+- Diagnostics keep the whole text of LaTeX, class and package messages, including the
+  `(LaTeX)`/`(<package>)` continuation lines. Before, only the first line came through, so
+  an error such as "Mismatched LaTeX support files detected" lost the lines that say which
+  versions do not match (#1).
+
+### CI and repository
+
+- `scripts/install-texlive.sh` installs only missing packages and contacts the TeX Live
+  repository only then, updating tlmgr first. A newer tlmgr on CTAN stopped re-runs over an
+  existing installation with "tlmgr itself needs to be updated".
 
 ## 0.0.3 (2026-10-11)
 
