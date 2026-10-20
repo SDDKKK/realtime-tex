@@ -1,9 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.0.5 (2026-10-19)
 
 ### Fixed
 
+- A main file whose name has a space (`my paper.tex`) works. LuaTeX quotes such a job name,
+  and the capture wrote its results under the quoted name, so no layout ever arrived (#8).
+- A page without glyphs (a blank page left by `\cleardoublepage` with `\pagestyle{empty}`) no
+  longer makes the whole layout fail with "invalid type: sequence, expected a map".
 - A figure or table with a comment line or `\vspace` right above it, or a comment after its
   `\end`, compiles in the live engine. The engine looked for `\begin{figure}` only at the very
   start of the unit and for `\end{figure}` only at its very end, so it typeset the `\begin` as
@@ -29,6 +33,12 @@
 - IEEEtran's `\subsubsection`, a run-in heading like `\paragraph`, waits for the next pass
   instead of going live without the paragraph its title shares a line with. rtex knew run-in
   headings only by name; the capture now records which headings the class sets run-in.
+- Math set with newtxmath, or any font whose TFM comes with a `.vf`, is right in the live
+  display list. LuaTeX reports such a font as a real font and reads its `.vf` only when it
+  writes the PDF, so rtex did not expand it: glyphs named `ntxmi`, `ntxsy`, … with their
+  virtual character codes, which have no outline file in `pdftex.map`, and a host drew
+  the wrong characters (`+` came out as `Ï`). rtex now reads the `.vf` itself and names the
+  real fonts (`NewTXMI`, `txsys`, …).
 
 ### New
 
@@ -40,6 +50,8 @@
 
 - The corpus has an IEEEtran journal paper (two columns, a nomenclature, run-in headings,
   floats). CI checks that at least 18 of its units are live and that all of them are exact.
+- CI installs newtx (with txfonts and kastrup) for a test that a live edit in newtxmath math
+  names the real fonts, not the virtual ones.
 
 ## 0.0.4 (2026-10-12)
 
