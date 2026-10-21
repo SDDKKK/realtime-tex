@@ -7,12 +7,25 @@
 - Live edits no longer stop for good after a paragraph that typesets no rows (only a `\label`,
   `\vspace` or `\noindent`) is typed next to another paragraph typed fresh, before the
   background pass. Its placement read the first of no rows and the engine thread panicked
-  ("index out of bounds" in `layout.rs`), so no edit was live again until the engine restarted.
+  ("index out of bounds" in `layout.rs`), so no edit was live again until the engine restarted
+  (#13).
 - The paragraph after a run-in heading's own paragraph (the second paragraph under an IEEEtran
   `\subsubsection` or a `\paragraph`) is live, and so is a heading right after a run-in
   heading's paragraph. They start under the heading's `\everypar`, which the live engine cannot
   replay; by then it only restores `\clubpenalty` and empties itself, so the capture records it
-  as the default `\everypar`.
+  as the default `\everypar` (#14).
+- A live-engine error is withdrawn once a pass compiles the fixed source, and a pass without
+  errors clears the previous pass's errors, so a host no longer shows an error after the text
+  is valid again. A paragraph that crashed the live engine (often a half-typed command) goes
+  live again when it is edited after a clean pass, instead of waiting for the preamble to
+  change; after three crashes in a row it still waits (#11).
+- Run-in headings (`\paragraph`, `\subparagraph`, IEEEtran's `\subsubsection`) are live. The
+  source cut such a heading off from the paragraph or list that sets its title, so the heading
+  alone typeset nothing, and an edit in that paragraph was drawn without the title in the wrong
+  place until the pass. The heading's span now runs on through that paragraph or list, a label
+  and a blank line between them included, and the capture keeps a list that takes the title in
+  the heading's unit. The IEEEtran corpus paper goes from 20 to 27 of 27 units live, all exact
+  (#15).
 
 ## 0.0.5 (2026-10-19)
 
